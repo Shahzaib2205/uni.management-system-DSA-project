@@ -17,7 +17,6 @@ public:
 		dateOfBirth = dob;
 		phone = ph;
 		next = NULL;
-
 	}
 };
 	class student {
@@ -44,20 +43,15 @@ public:
 		}
 		void insertInOrder(int i, int sem, float gpa, string nm, string dob, string ph) {
 			Node* newStudent = new Node(i, sem, gpa, nm, dob, ph);
-
-			// Case 1: List is empty or new id is smaller than head's id (insert at start)
 			if (head == NULL || i < head->id) {
-				newStudent->next = head;  // New student becomes the new head
+				newStudent->next = head;
 				head = newStudent;
 			}
 			else {
-				// Case 2: Traverse the list to find the correct position
 				Node* temp = head;
 				while (temp->next != NULL && temp->next->id < i) {
 					temp = temp->next;
 				}
-
-				// Insert the new student in the correct position
 				newStudent->next = temp->next;
 				temp->next = newStudent;
 			}
@@ -79,27 +73,20 @@ public:
 		}
 
 		void deleteAtEnd() {
-			// If the list is empty
 			if (head == nullptr) {
 				cout << "List is already empty." << endl;
 				return;
 			}
-
-			// If there is only one node in the list
 			else if (head->next == nullptr) {
 				delete head;
 				head = nullptr;
 				return;
 			}
-
-			// Traverse the list to find the second last node
 			else{
 				Node* temp = head;
 			while (temp->next->next != nullptr) {
 				temp = temp->next;
 			}
-
-			// Delete the last node and update the second last node's next pointer
 			delete temp->next;
 			temp->next = NULL;
 		}
@@ -186,7 +173,6 @@ public:
 		}
 
 	};
-	//node class professor
 	class TeacherNode {
 	public:
 		int id;
@@ -365,8 +351,8 @@ public:
 		}
 	};
 	int main() {
-		student s1; // Student management
-		Teacher t1; // Teacher management
+		student s1;
+		Teacher t1;
 		int choice;
 
 		do {
@@ -488,4 +474,3 @@ public:
 
 		return 0;
 	}
-
