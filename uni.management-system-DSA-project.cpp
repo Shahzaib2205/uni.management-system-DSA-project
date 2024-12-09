@@ -1,4 +1,6 @@
 # include <iostream>
+#include <fstream>
+#include <string>
 using namespace std;
 	class Node {
 public:
@@ -22,6 +24,50 @@ public:
 	class student {
 		Node* head = NULL;
 	public:
+		void WriteFile() {
+			if (!head) {
+				cout << "No students to save!" << endl;
+				return;
+			}
+			ofstream student("Student.txt", ios::trunc);
+			Node* temp = head;
+			while (temp!=NULL) {
+				
+				student << temp->id << "\n" << temp->semester << "\n"
+					<<temp->cgpa<<"\n" << temp->phone << "\n"
+					<< temp->dateOfBirth << "\n" << temp->name << "\n";
+				temp = temp->next;
+			}
+			student.close();
+			cout << "All students saved successfully." << endl;
+		}
+		void ReadFile() {
+			ifstream student("Student.txt");
+			if (!student.is_open()) {
+				cout << "Error: Unable to open the file!" << endl;
+				return;
+			}
+			string phone, dob, name;
+			int id, sems;
+			float cgpa;
+
+			while (student >> id >> sems >> cgpa) {
+				student.ignore();
+				getline(student, phone);
+				getline(student, dob);
+				getline(student, name);
+				if (student.fail()) {
+					cout << "Error: Corrupted file format or insufficient data!" << endl;
+					break;
+				}
+
+				insertInOrder(id, sems, cgpa, name, dob, phone);
+			}
+
+			student.close();
+			cout << "Data successfully loaded from file!" << endl;
+		}
+
 		void insertAtStart(int i, int sem, float gpa, string nm, string dob, string ph) {
 			Node* newStudent = new Node(i, sem, gpa, nm, dob, ph);
 			newStudent->next = head;
@@ -69,7 +115,7 @@ public:
 			head = temp->next;
 			delete temp;
 			temp = NULL;
-
+			WriteFile();
 		}
 
 		void deleteAtEnd() {
@@ -89,6 +135,7 @@ public:
 			}
 			delete temp->next;
 			temp->next = NULL;
+			WriteFile();
 		}
 		}
 		void deleteAtPosition() {
@@ -118,6 +165,7 @@ public:
 					temp->next = temp2->next;
 					delete temp2;
 					temp2 = NULL;
+					WriteFile();
 				}
 
 			}
@@ -164,6 +212,7 @@ public:
 					cin >> temp->id;
 					cout << "Enter the semester::";
 					cin >> temp->semester;
+					WriteFile();
 					return;
 				}
 
@@ -171,6 +220,7 @@ public:
 			}
 
 		}
+		
 
 	};
 	class TeacherNode {
@@ -199,12 +249,59 @@ public:
 		TeacherNode* head = NULL;
 
 	public:
+		//Filehendling 
+		void WriteFile() {
+			if (!head) {
+				cout << "No teachers to save!" << endl;
+				return;
+			}
+			ofstream teacher("Teacher.txt", ios::trunc);
+			TeacherNode* temp = head;
+			while (temp != NULL) {
+
+				teacher << temp->id << "\n" << temp->salary << "\n"
+					<< temp->department << "\n" << temp->phone << "\n"
+					<< temp->dateOfBirth << "\n" << temp->name << "\n"
+					<<temp->designation<<"\n";
+				temp = temp->next;
+			}
+			teacher.close();
+			cout << "All teachers saved successfully." << endl;
+		}
+		void ReadFile() {
+			ifstream teacher("Teacher.txt");
+			if (!teacher.is_open()) {
+				cout << "Error: Unable to open the file!" << endl;
+				return;
+			}
+			string phone, dob, name,deprt,desig;
+			int id;
+			long salary;
+
+			while (teacher >> id >> salary) {
+				teacher.ignore();
+				getline(teacher, deprt);
+				getline(teacher, phone);
+				getline(teacher, dob);
+				getline(teacher, name);
+				getline(teacher, desig);
+				if (teacher.fail()) {
+					cout << "Error: Corrupted file format or insufficient data!" << endl;
+					break;
+				}
+
+				insertInOrder(id, name, deprt, desig, dob, phone, salary);
+			}
+
+			teacher.close();
+			cout << "Data successfully loaded from file!" << endl;
+		}
+		//inserting
 		void insertAtStart(int i, string nm, string dept, string desg, string dob, string ph, double sal) {
 			TeacherNode* newTeacher = new TeacherNode(i, nm, dept, desg, dob, ph, sal);
 			newTeacher->next = head;
 			head = newTeacher;
 		}
-
 		void insertAtEnd(int i, string nm, string dept, string desg, string dob, string ph, double sal) {
 			TeacherNode* newTeacher = new TeacherNode(i, nm, dept, desg, dob, ph, sal);
 			if (head == NULL) {
@@ -218,7 +315,6 @@ public:
 				temp->next = newTeacher;
 			}
 		}
-
 		void insertInOrder(int i, string nm, string dept, string desg, string dob, string ph, double sal) {
 			TeacherNode* newTeacher = new TeacherNode(i, nm, dept, desg, dob, ph, sal);
 
@@ -235,7 +331,7 @@ public:
 				temp->next = newTeacher;
 			}
 		}
-
+		//printing
 		void printList() {
 			TeacherNode* temp = head;
 			while (temp != NULL) {
@@ -247,7 +343,7 @@ public:
 				temp = temp->next;
 			}
 		}
-
+		//removing
 		void deleteAtStart() {
 			if (head == NULL) {
 				cout << "List is already empty." << endl;
@@ -256,8 +352,8 @@ public:
 			TeacherNode* temp = head;
 			head = head->next;
 			delete temp;
+			WriteFile();
 		}
-
 		void deleteAtEnd() {
 			if (head == NULL) {
 				cout << "List is already empty." << endl;
@@ -274,8 +370,8 @@ public:
 			}
 			delete temp->next;
 			temp->next = NULL;
+			WriteFile();
 		}
-
 		void deleteAtPosition() {
 			int pos;
 			cout << "Enter position to delete: ";
@@ -300,8 +396,9 @@ public:
 			TeacherNode* temp2 = temp->next;
 			temp->next = temp2->next;
 			delete temp2;
+			WriteFile();
 		}
-
+		//searching
 		void searchById() {
 			int Id;
 			cout << "Enter ID to search: ";
@@ -321,7 +418,7 @@ public:
 			}
 			cout << "Teacher with ID " << Id << " not found." << endl;
 		}
-
+		//updating
 		void update() {
 			int id;
 			cout << "Enter ID to update: ";
@@ -343,6 +440,7 @@ public:
 					cin >> temp->phone;
 					cout << "Salary: ";
 					cin >> temp->salary;
+					WriteFile();
 					return;
 				}
 				temp = temp->next;
@@ -353,7 +451,9 @@ public:
 	int main() {
 		student s1;
 		Teacher t1;
+		
 		int choice;
+		s1.ReadFile();
 
 		do {
 			
@@ -374,6 +474,7 @@ public:
 
 			switch (choice) {
 			case 1: {
+				
 				int id, sem;
 				float cgpa;
 				string name, dob, phone;
@@ -390,7 +491,7 @@ public:
 				cout << "Enter Phone Number: ";
 				cin >> phone;
 				s1.insertInOrder(id, sem, cgpa, name, dob, phone);
-				system("cls");
+				s1.WriteFile();
 				break;
 			}
 			case 2: {
@@ -412,6 +513,7 @@ public:
 				cout << "Enter Salary: ";
 				cin >> salary;
 				t1.insertInOrder(id, name, department, designation, dob, phone, salary);
+				t1.WriteFile();
 				break;
 			}
 			case 3:
@@ -432,6 +534,7 @@ public:
 				break;
 			case 7:
 				s1.update();
+				
 				break;
 			case 8:
 				t1.update();
